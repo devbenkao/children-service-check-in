@@ -12,7 +12,12 @@ function ListChildComponent({ children, handleDelete }) {
   return (
     <div className="p-6 bg-gray-100 rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4 text-gray-800">
-        Children Attendance for {new Date().toLocaleDateString()}
+        Children Attendance for{" "}
+        {new Date().toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })}
       </h2>
 
       <button
