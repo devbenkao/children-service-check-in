@@ -1,23 +1,14 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import ListChildComponent from "./components/ListChildComponent"; // Import ListChildComponent
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="p-8 bg-gray-200 min-h-screen">
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">
+        Children Service Check-In
+      </h1>
+      {/* Add ListChildComponent here */}
+      <ListChildComponent />
     </div>
   );
 }
