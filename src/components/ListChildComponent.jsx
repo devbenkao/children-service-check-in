@@ -1,16 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function ListChildComponent({ children, handleDelete }) {
   const navigate = useNavigate();
+  const [notification, setNotification] = useState(null);
 
   const handleEdit = (child) => {
     // Navigate to the edit page and pass the child data via the state
     navigate("/add-child", { state: { childToEdit: child } });
   };
 
+  const handleCheckOut = (index) => {
+    // Call the handleDelete passed from the parent
+    handleDelete(index);
+
+    // Show the notification
+    setNotification("Child checked out successfully");
+
+    // Remove the notification after 3 seconds
+    setTimeout(() => {
+      setNotification(null);
+    }, 3000);
+  };
+
   return (
-    <div className="p-6 bg-gray-100 rounded-lg shadow-md">
+    <div className="p-6 bg-gray-100 rounded-lg shadow-md relative">
+      {/* Notification */}
+      {notification && (
+        <div className="absolute top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg transition-opacity duration-300 opacity-100">
+          {notification}
+        </div>
+      )}
+
       <h2 className="text-2xl font-bold mb-4 text-gray-800">
         Children Attendance for{" "}
         {new Date().toLocaleDateString("en-US", {
@@ -34,7 +55,7 @@ function ListChildComponent({ children, handleDelete }) {
             <th className="px-4 py-2 text-left">Grade Level</th>
             <th className="px-4 py-2 text-left">Emergency Contact</th>
             <th className="px-4 py-2 text-left">Check-In Timestamp</th>
-            <th className="px-4 py-2 text-left">Actions</th>
+            <th className="px-4 py-2 text-left"></th>
           </tr>
         </thead>
         <tbody>
@@ -52,7 +73,7 @@ function ListChildComponent({ children, handleDelete }) {
                   Edit
                 </button>
                 <button
-                  onClick={() => handleDelete(index)} // Call the handleDelete passed from App.js
+                  onClick={() => handleCheckOut(index)} // Custom handler for checkout with notification
                   className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-400 focus:outline-none"
                 >
                   Check-Out
