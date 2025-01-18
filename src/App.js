@@ -6,10 +6,12 @@ import ChildComponent from "./components/ChildComponent";
 function App() {
   const [children, setChildren] = useState([]);
 
+  // Function to add a new child
   const addChild = (newChild) => {
     setChildren([...children, newChild]);
   };
 
+  // Function to update an existing child
   const updateChild = (updatedChild) => {
     const updatedChildren = children.map((child) =>
       child.name === updatedChild.name ? updatedChild : child
@@ -17,6 +19,7 @@ function App() {
     setChildren(updatedChildren);
   };
 
+  // Function to delete a child by index
   const handleDelete = (index) => {
     const updatedChildren = children.filter((_, i) => i !== index);
     setChildren(updatedChildren);
@@ -29,6 +32,7 @@ function App() {
           Children Service Check-In
         </h1>
         <Routes>
+          {/* Route for listing children */}
           <Route
             path="/"
             element={
@@ -38,6 +42,7 @@ function App() {
               />
             }
           />
+          {/* Route for adding/updating a child */}
           <Route
             path="/add-child"
             element={

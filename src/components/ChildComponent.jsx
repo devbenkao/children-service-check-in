@@ -1,116 +1,172 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function ChildComponent({ addChild, updateChild }) {
-  const [name, setName] = useState("");
-  const [gradeLevel, setGradeLevel] = useState("");
-  const [emergencyContact, setEmergencyContact] = useState("");
-  const [checkInTimestamp, setCheckInTimestamp] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
-
-  const navigate = useNavigate();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // For new child or editing existing one
+  const childToEdit = location.state?.childToEdit;
+
+  const [name, setName] = useState(childToEdit?.name || "");
+  const [gradeLevel, setGradeLevel] = useState(childToEdit?.gradeLevel || "");
+  const [emergencyContact, setEmergencyContact] = useState(
+    childToEdit?.emergencyContact || ""
+  );
+  const [checkInTimestamp, setCheckInTimestamp] = useState(
+    childToEdit?.checkInTimestamp || new Date().toLocaleString()
+  );
+  const [image, setImage] = useState(childToEdit?.picture || null);
 
   useEffect(() => {
-    if (location.state && location.state.childToEdit) {
-      const childToEdit = location.state.childToEdit;
-      setName(childToEdit.name);
-      setGradeLevel(childToEdit.gradeLevel);
-      setEmergencyContact(childToEdit.emergencyContact);
-      setCheckInTimestamp(childToEdit.checkInTimestamp);
-      setIsEditing(true);
+    if (childToEdit) {
+      // Set the image preview if editing
+      setImage(childToEdit.picture);
     }
-  }, [location.state]);
+  }, [childToEdit]);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setImage(imageUrl);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const updatedChild = {
+    const newChild = {
       name,
       gradeLevel,
       emergencyContact,
-      checkInTimestamp: isEditing
-        ? checkInTimestamp
-        : new Date().toLocaleString(),
+      checkInTimestamp,
+      picture: image,
     };
 
-    if (isEditing) {
-      updateChild(updatedChild); // Call the updateChild function passed via props
+    if (childToEdit) {
+      updateChild(newChild);
     } else {
-      addChild(updatedChild); // Call the addChild function passed via props
+      addChild(newChild);
     }
 
-    navigate("/"); // Navigate back to the list
+    navigate("/"); // Navigate back to the children list
+  };
+
+  const handleCancel = () => {
+    navigate("/"); // Navigate back to the children list without saving
   };
 
   return (
-    <div className="p-6 bg-gray-100 rounded-lg shadow-md">
+    <div className="max-w-md mx-auto p-4 sm:p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4 text-gray-800">
-        {isEditing ? "Edit Child" : "Add a New Child"}
+        {childToEdit ? "Edit Child" : "Add New Child"}
       </h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="name" className="block text-gray-700">
+          <label
+            htmlFor="name"
+            className="block text-sm font-semibold text-gray-600"
+          >
             Name
           </label>
           <input
-            type="text"
             id="name"
-            className="w-full p-2 border border-gray-300 rounded-md"
+            type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
           />
         </div>
+
         <div className="mb-4">
-          <label htmlFor="gradeLevel" className="block text-gray-700">
+          <label
+            htmlFor="gradeLevel"
+            className="block text-sm font-semibold text-gray-600"
+          >
             Grade Level
           </label>
           <input
-            type="text"
             id="gradeLevel"
-            className="w-full p-2 border border-gray-300 rounded-md"
+            type="text"
             value={gradeLevel}
             onChange={(e) => setGradeLevel(e.target.value)}
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
           />
         </div>
+
         <div className="mb-4">
-          <label htmlFor="emergencyContact" className="block text-gray-700">
+          <label
+            htmlFor="emergencyContact"
+            className="block text-sm font-semibold text-gray-600"
+          >
             Emergency Contact
           </label>
           <input
-            type="text"
             id="emergencyContact"
-            className="w-full p-2 border border-gray-300 rounded-md"
+            type="text"
             value={emergencyContact}
             onChange={(e) => setEmergencyContact(e.target.value)}
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
           />
         </div>
+
         <div className="mb-4">
-          <label htmlFor="checkInTimestamp" className="block text-gray-700">
+          <label
+            htmlFor="checkInTimestamp"
+            className="block text-sm font-semibold text-gray-600"
+          >
             Check-In Timestamp
           </label>
           <input
-            type="text"
             id="checkInTimestamp"
-            className="w-full p-2 border border-gray-300 rounded-md"
-            value={checkInTimestamp || new Date().toLocaleString()}
-            disabled
+            type="text"
+            value={checkInTimestamp}
+            onChange={(e) => setCheckInTimestamp(e.target.value)}
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
           />
         </div>
-        <div className="flex justify-between">
+
+        <div className="mb-4">
+          <label
+            htmlFor="image"
+            className="block text-sm font-semibold text-gray-600"
+          >
+            Picture
+          </label>
+          <input
+            id="image"
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          {image && (
+            <div className="mt-2 text-center">
+              <img
+                src={image}
+                alt="Child"
+                className="w-24 h-24 object-cover rounded-full mx-auto"
+              />
+            </div>
+          )}
+        </div>
+
+        <div className="flex justify-center mt-6 gap-4">
           <button
             type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-400"
+            className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-400 focus:outline-none"
           >
-            {isEditing ? "Update Child" : "Add Child"}
+            {childToEdit ? "Update Child" : "Add Child"}
           </button>
           <button
             type="button"
-            className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-400"
-            onClick={() => navigate("/")}
+            onClick={handleCancel}
+            className="bg-gray-500 text-white px-6 py-2 rounded-md hover:bg-gray-400 focus:outline-none"
           >
             Cancel
           </button>
