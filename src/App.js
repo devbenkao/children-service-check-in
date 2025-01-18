@@ -5,6 +5,7 @@ import ChildComponent from "./components/ChildComponent";
 
 function App() {
   const [children, setChildren] = useState([]);
+  const [attendanceCount, setAttendanceCount] = useState(0);
 
   // Function to add a new child
   const addChild = (newChild) => {
@@ -25,6 +26,10 @@ function App() {
     setChildren(updatedChildren);
   };
 
+  const updateAttendanceCount = () => {
+    setAttendanceCount(attendanceCount + 1); // Increment count when a new child is added
+  };
+
   return (
     <Router>
       <div className="p-8 bg-gray-200 min-h-screen">
@@ -39,6 +44,7 @@ function App() {
               <ListChildComponent
                 children={children}
                 handleDelete={handleDelete}
+                attendanceCount={attendanceCount}
               />
             }
           />
@@ -46,7 +52,11 @@ function App() {
           <Route
             path="/add-child"
             element={
-              <ChildComponent addChild={addChild} updateChild={updateChild} />
+              <ChildComponent
+                addChild={addChild}
+                updateChild={updateChild}
+                updateAttendanceCount={updateAttendanceCount}
+              />
             }
           />
         </Routes>

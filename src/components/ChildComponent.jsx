@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-function ChildComponent({ addChild, updateChild }) {
+function ChildComponent({ addChild, updateChild, updateAttendanceCount }) {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -48,6 +48,7 @@ function ChildComponent({ addChild, updateChild }) {
       updateChild(newChild);
     } else {
       addChild(newChild);
+      updateAttendanceCount(); // Only update when a new child is added
     }
 
     navigate("/"); // Navigate back to the children list

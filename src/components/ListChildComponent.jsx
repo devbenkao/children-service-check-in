@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function ListChildComponent({ children, handleDelete }) {
+function ListChildComponent({ children, handleDelete, attendanceCount }) {
   const navigate = useNavigate();
   const [notification, setNotification] = useState(null);
 
@@ -25,23 +25,27 @@ function ListChildComponent({ children, handleDelete }) {
           {notification}
         </div>
       )}
-
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">
-        Children Attendance for{" "}
-        {new Date().toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        })}
-      </h2>
-
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold text-gray-800">
+          Children Attendance for{" "}
+          {new Date().toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
+        </h2>
+        <p className="text-lg font-medium text-gray-700">
+          Total Attendance: {attendanceCount}
+        </p>
+      </div>
       <button
-        onClick={() => navigate("/add-child")}
+        onClick={() => {
+          navigate("/add-child"); // Pass callback
+        }}
         className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-400 focus:outline-none mb-4"
       >
         Add Child
       </button>
-
       <div className="overflow-x-auto">
         <table className="min-w-full table-auto">
           <thead>
@@ -74,19 +78,21 @@ function ListChildComponent({ children, handleDelete }) {
                 <td className="px-4 py-2">{child.gradeLevel}</td>
                 <td className="px-4 py-2">{child.emergencyContact}</td>
                 <td className="px-4 py-2">{child.checkInTimestamp}</td>
-                <td className="px-4 py-2 flex space-x-2">
-                  <button
-                    onClick={() => handleEdit(child)}
-                    className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-400 focus:outline-none dark:bg-gray-600 dark:hover:bg-gray-500"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleCheckOut(index)} // Custom handler for checkout with notification
-                    className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-400 focus:outline-none"
-                  >
-                    Check-Out
-                  </button>
+                <td className="px-4 py-2 text-center align-middle box-border">
+                  <div className="flex items-center justify-center space-x-2">
+                    <button
+                      onClick={() => handleEdit(child)}
+                      className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-400 focus:outline-none dark:bg-gray-600 dark:hover:bg-gray-500"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleCheckOut(index)}
+                      className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-400 focus:outline-none"
+                    >
+                      Check-Out
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
